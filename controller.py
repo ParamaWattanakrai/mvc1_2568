@@ -62,15 +62,23 @@ class Controller:
             
         success = False
         message = 'An unexpected error occurred.'
+        new_app_id = None
 
         try:
             if job['job_type'] == 'สหกิจศึกษา':
-                success, message = self.model.apply_for_coop_job(job['job_id'], self.current_user)
+                success, message, new_app_id = self.model.apply_for_coop_job(job['job_id'], self.current_user)
             elif job['job_type'] == 'งานปกติ':
-                success, message = self.model.apply_for_regular_job(job['job_id'], self.current_user)
+                success, message, new_app_id = self.model.apply_for_regular_job(job['job_id'], self.current_user)
             
-            if success:
-                messagebox.showinfo('Success', f"You have successfully applied for {job['job_title']}!")
+            if success and new_app_id is not None:
+                details = self.model.get_application_details(new_app_id)
+                success_message = (
+                    'Application Submitted!\n\n'
+                    f"Job Title: {details['job_title']}\n"
+                    f"Company: {details['company_name']}\n"
+                    f"Date Submitted: {details['application_date']}"
+                )
+                messagebox.showinfo('Success', success_message)
             else:
                 messagebox.showerror('Application Failed', f'You are not eligible for this position.\nReason: {message}')
 
