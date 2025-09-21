@@ -12,6 +12,7 @@ def get_open_jobs():
         FROM Jobs j
         JOIN Companies c ON j.company_id = c.company_id
         WHERE j.status = 'เปิด'
+        ORDER BY j.job_title
     ''')
     jobs = cursor.fetchall()
     conn.close()
@@ -64,3 +65,4 @@ def apply_for_regular_job(job_id, candidate):
         return True, 'Application successful.'
     else:
         return False, 'This is a full-time position for graduates only.'
+
