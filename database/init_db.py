@@ -86,18 +86,19 @@ jobs_data = [
 cursor.executemany('INSERT INTO Jobs VALUES (?, ?, ?, ?, ?, ?, ?)', jobs_data)
 
 candidates_data = [
-    ('66010001', 'Somchai', 'Jaidee', 'somchai.j@example.com', 'จบแล้ว'),
-    ('66010002', 'Somsri', 'Rakdee', 'somsri.r@example.com', 'จบแล้ว'),
-    ('67010001', 'Apiwat', 'Boonma', 'apiwat.b@example.com', 'กำลังศึกษา'),
-    ('67010002', 'Naree', 'Yindee', 'naree.y@example.com', 'กำลังศึกษา'),
-    ('65010003', 'Peter', 'Parker', 'peter.p@example.com', 'จบแล้ว'),
-    ('68010004', 'Wanda', 'Maximoff', 'wanda.m@example.com', 'กำลังศึกษา'),
-    ('66010005', 'Tony', 'Stark', 'tony.s@example.com', 'จบแล้ว'),
-    ('67010006', 'Bruce', 'Banner', 'bruce.b@example.com', 'จบแล้ว'),
-    ('68010007', 'Natasha', 'Romanoff', 'natasha.r@example.com', 'กำลังศึกษา'),
-    ('67010008', 'Steve', 'Rogers', 'steve.r@example.com', 'จบแล้ว')
+    ('64050111', 'สมชาย', 'ใจดี', 'somchai.jaidee@gmail.com', 'จบแล้ว'),
+    ('63050222', 'สมศรี', 'รักงาน', 'somsri.r@hotmail.com', 'จบแล้ว'),
+    ('64050333', 'อาทิตย์', 'ตั้งใจ', 'artit.t@outlook.com', 'จบแล้ว'),
+    ('62050444', 'จันทรา', 'แจ่มใส', 'chantra.j@example.com', 'จบแล้ว'),
+    ('63050555', 'มานะ', 'พากเพียร', 'mana.p@yahoo.com', 'จบแล้ว'),
+    ('68051001', 'นารี', 'ยินดี', '68051001@kmitl.ac.th', 'กำลังศึกษา'),
+    ('67051002', 'อภิวัฒน์', 'บุญมา', '67051002@kmitl.ac.th', 'กำลังศึกษา'),
+    ('66051003', 'ปิติ', 'ชูใจ', '66051003@kmitl.ac.th', 'กำลังศึกษา'),
+    ('67051004', 'วีระ', 'กล้าหาญ', '67051004@kmitl.ac.th', 'กำลังศึกษา'),
+    ('68051005', 'ชูใจ', 'ใฝ่เรียน', '68051005@kmitl.ac.th', 'กำลังศึกษา')
 ]
 cursor.executemany('INSERT INTO Candidate VALUES (?, ?, ?, ?, ?)', candidates_data)
+
 
 conn.commit()
 conn.close()
