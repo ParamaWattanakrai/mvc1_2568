@@ -1,5 +1,5 @@
 import model
-from view import App, LoginPage, JobsPage
+from view import App, LoginPage, JobsPage, ApplicationPage
 from tkinter import messagebox
 
 class Controller:
@@ -35,10 +35,29 @@ class Controller:
             return f"{self.current_user['first_name']} {self.current_user['last_name']}"
         return 'Guest'
 
-    def apply_for_job(self, job_id):
+    def show_jobs_page(self):
+        self.view.show_frame(JobsPage)
+
+    def show_application_page(self, job_id):
+        job_data = self.model.get_job_by_id(job_id)
+        if job_data:
+            full_job_data = dict(job_data)
+            
+            conn = model.sqlite3.connect(model.DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute('SELECT company_name FROM Companies WHERE company_id = ?', (full_job_data['company_id'],))
+            company = cursor.fetchone()
+            conn.close()
+            full_job_data['company_name'] = company[0] if company else 'N/A'
+
+            self.view.frames[ApplicationPage].display_job_details(full_job_data)
+            self.view.show_frame(ApplicationPage)
+
+    def confirm_application(self, job_id):
         job = self.model.get_job_by_id(job_id)
         if not job:
             messagebox.showerror('Error', 'Job not found.')
+            self.view.show_frame(JobsPage)
             return
             
         candidate_status = self.current_user['status']
@@ -56,3 +75,5 @@ class Controller:
             else:
                 reason = 'This is a full-time position for graduates only.'
             messagebox.showerror('Application Failed', f'You are not eligible for this position.\nReason: {reason}')
+        
+        self.view.show_frame(JobsPage)

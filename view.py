@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 class App(tk.Tk):
-    '''Main application window that manages frames.'''
     def __init__(self):
         super().__init__()
         self.title('Job Fair Application System')
@@ -16,7 +15,7 @@ class App(tk.Tk):
         self.controller = None
         self.frames = {}
 
-        for F in (LoginPage, JobsPage):
+        for F in (LoginPage, JobsPage, ApplicationPage):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky='nsew')
@@ -91,7 +90,6 @@ class JobsPage(tk.Frame):
         self.controller = controller
 
     def refresh_data(self):
-        '''Called by controller to update the jobs list and welcome message.'''
         if not self.controller: return
 
         user_name = self.controller.get_current_user_name()
@@ -112,8 +110,52 @@ class JobsPage(tk.Frame):
             
         job_id = self.tree.item(selected_item)['values'][0]
         if self.controller:
-            self.controller.apply_for_job(job_id)
+            self.controller.show_application_page(job_id)
 
     def logout(self):
         if self.controller:
             self.controller.logout()
+
+class ApplicationPage(tk.Frame):
+    def __init__(self, parent, app_instance):
+        super().__init__(parent)
+        self.app = app_instance
+        self.controller = None
+        self.job_id = None
+
+        tk.Label(self, text='Confirm Your Application', font=('Helvetica', 18, 'bold')).pack(pady=20)
+
+        self.job_title_label = tk.Label(self, text='', font=('Helvetica', 14))
+        self.job_title_label.pack(pady=5)
+
+        self.company_name_label = tk.Label(self, text='', font=('Helvetica', 12))
+        self.company_name_label.pack(pady=5)
+
+        self.job_type_label = tk.Label(self, text='', font=('Helvetica', 12, 'italic'))
+        self.job_type_label.pack(pady=10)
+
+        button_frame = tk.Frame(self)
+        button_frame.pack(pady=20)
+
+        confirm_button = tk.Button(button_frame, text='Confirm Application', command=self.confirm)
+        confirm_button.pack(side='left', padx=10)
+
+        cancel_button = tk.Button(button_frame, text='Cancel', command=self.cancel)
+        cancel_button.pack(side='left', padx=10)
+
+    def set_controller(self, controller):
+        self.controller = controller
+
+    def display_job_details(self, job_data):
+        self.job_id = job_data['job_id']
+        self.job_title_label.config(text=f"Position: {job_data['job_title']}")
+        self.company_name_label.config(text=f"Company: {job_data['company_name']}")
+        self.job_type_label.config(text=f"Type: {job_data['job_type']}")
+
+    def confirm(self):
+        if self.controller and self.job_id:
+            self.controller.confirm_application(self.job_id)
+
+    def cancel(self):
+        if self.controller:
+            self.controller.show_jobs_page()
