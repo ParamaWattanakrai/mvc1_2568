@@ -32,12 +32,14 @@ CREATE TABLE Jobs (
     job_description TEXT,
     company_id TEXT,
     deadline TEXT,
-    status TEXT,
-    job_type TEXT,
+    status TEXT NOT NULL,
+    job_type TEXT NOT NULL,
     FOREIGN KEY (company_id) REFERENCES Companies (company_id),
     CONSTRAINT check_job_id CHECK (
         LENGTH(job_id) = 8 AND SUBSTR(job_id, 1, 1) != '0'
-    )
+    ),
+    CONSTRAINT check_job_status CHECK (status IN ('เปิด', 'ปิด')),
+    CONSTRAINT check_job_type CHECK (job_type IN ('งานปกติ', 'สหกิจศึกษา'))
 )''')
 
 cursor.execute('''
@@ -46,10 +48,11 @@ CREATE TABLE Candidate (
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
-    status TEXT,
+    status TEXT NOT NULL,
     CONSTRAINT check_candidate_id CHECK (
         LENGTH(candidate_id) = 8 AND SUBSTR(candidate_id, 1, 1) != '0'
-    )
+    ),
+    CONSTRAINT check_candidate_status CHECK (status IN ('กำลังศึกษา', 'จบแล้ว'))
 )''')
 
 cursor.execute('''
@@ -62,7 +65,6 @@ CREATE TABLE Application (
     FOREIGN KEY (candidate_id) REFERENCES Candidate (candidate_id)
 )''')
 
-# Sample Data
 companies_data = [
     ('11110001', 'Innovatech Solutions', 'hr@innovatech.com', 'Bangkok'),
     ('22220002', 'Cyberdyne Systems', 'careers@cyberdyne.com', 'Pathum Thani')
@@ -97,6 +99,5 @@ candidates_data = [
 ]
 cursor.executemany('INSERT INTO Candidate VALUES (?, ?, ?, ?, ?)', candidates_data)
 
-# Commit and Close
 conn.commit()
 conn.close()
