@@ -60,20 +60,21 @@ class Controller:
             self.view.show_frame(JobsPage)
             return
             
-        candidate_status = self.current_user['status']
-        job_type = job['job_type']
+        success = False
+        message = 'An unexpected error occurred.'
 
-        if self.model.is_candidate_eligible(candidate_status, job_type):
-            try:
-                self.model.create_application(job['job_id'], self.current_user['candidate_id'])
+        try:
+            if job['job_type'] == 'สหกิจศึกษา':
+                success, message = self.model.apply_for_coop_job(job['job_id'], self.current_user)
+            elif job['job_type'] == 'งานปกติ':
+                success, message = self.model.apply_for_regular_job(job['job_id'], self.current_user)
+            
+            if success:
                 messagebox.showinfo('Success', f"You have successfully applied for {job['job_title']}!")
-            except Exception as e:
-                messagebox.showerror('Database Error', f'Could not save application: {e}')
-        else:
-            if job_type == 'สหกิจศึกษา':
-                reason = 'This is a co-op position for current students only.'
             else:
-                reason = 'This is a full-time position for graduates only.'
-            messagebox.showerror('Application Failed', f'You are not eligible for this position.\nReason: {reason}')
+                messagebox.showerror('Application Failed', f'You are not eligible for this position.\nReason: {message}')
+
+        except Exception as e:
+            messagebox.showerror('Database Error', f'Could not save application: {e}')
         
         self.view.show_frame(JobsPage)
